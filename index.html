@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura CDSS | Clinical Decision Support System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="material-icons-round">health_and_safety</span>
+                <h1>Aura <span>CDSS</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li id="nav-dashboard" class="active" onclick="switchView('dashboard')"><span class="material-icons-round">dashboard</span> Dashboard</li>
+                <li id="nav-hpc" onclick="switchView('hpc')"><span class="material-icons-round">dns</span> HPC Workload Manager</li>
+                <li><span class="material-icons-round">people</span> Patients</li>
+                <li><span class="material-icons-round">science</span> Lab Results</li>
+            </ul>
+            <div class="hipaa-badge">
+                <span class="material-icons-round">lock</span>
+                <span>HIPAA Compliant Session</span>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar no-print">
+                <div class="search-bar">
+                    <span class="material-icons-round">search</span>
+                    <select id="patient-selector" title="patient-selector" style="background:transparent; border:none; color:inherit; outline:none; font-family:inherit; flex-grow:1; font-size: 0.875rem; cursor:pointer;-webkit-appearance: none;">
+                        <option value="PT-842-991">PT-842-991: James Robertson</option>
+                        <option value="PT-112-402">PT-112-402: Sarah Connor</option>
+                    </select>
+                </div>
+                <div class="header-actions">
+                    <button id="add-data-btn" class="action-btn primary" onclick="document.getElementById('lab-modal').classList.add('active')">
+                        <span class="material-icons-round">add</span> Add Data
+                    </button>
+                    <button id="theme-toggle" class="action-btn" title="Toggle Theme">
+                        <span class="material-icons-round">light_mode</span>
+                    </button>
+                    <button id="print-btn" class="action-btn" title="Export Report">
+                        <span class="material-icons-round">print</span>
+                    </button>
+                </div>
+                <div class="user-profile">
+                    <div class="dr-info">
+                        <span class="dr-name">Dr. Sarah Jenkins</span>
+                        <span class="dr-role">Chief of Diagnostic Medicine</span>
+                    </div>
+                    <div class="avatar">SJ</div>
+                </div>
+            </header>
+
+            <div id="view-dashboard" class="dashboard-grid view-section active-view">
+
+                <!-- Patient Summary -->
+                <section class="card patient-summary" id="patient-summary">
+                    <!-- Populated by JS -->
+                </section>
+
+                <!-- Diagnostic Engine -->
+                <section class="card diagnostic-engine" id="diagnostic-engine">
+                    <div class="card-header">
+                        <h2><span class="material-icons-round">psychology</span> AI Diagnostic Engine</h2>
+                        <span class="badge ai-active">Analyzing...</span>
+                    </div>
+                    <div class="diagnoses-list" id="diagnoses-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+
+                <!-- Devil's Advocate Engine -->
+                <section class="card devils-advocate" id="devils-advocate">
+                    <div class="card-header warning">
+                        <h2><span class="material-icons-round">gavel</span> Devil's Advocate</h2>
+                        <span class="badge warning">Counter-Analysis</span>
+                    </div>
+                    <div class="advocate-content" id="advocate-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+
+                <!-- Volatility Radar -->
+                <section class="card volatility-radar" id="volatility-radar">
+                    <div class="card-header danger">
+                        <h2><span class="material-icons-round">radar</span> Condition Volatility Radar</h2>
+                        <span class="badge danger" id="risk-score">High Risk</span>
+                    </div>
+                    <div class="radar-container">
+                        <!-- CSS/SVG visualization here -->
+                        <div class="radar-visual">
+                            <div class="pulse-ring circle-1"></div>
+                            <div class="pulse-ring circle-2"></div>
+                            <div class="pulse-ring circle-3"></div>
+                            <div class="radar-sweep"></div>
+                            <div class="radar-point critical" style="top: 25%; left: 60%;"
+                                title="Respiratory distress vector"></div>
+                            <div class="radar-point warning" style="top: 70%; left: 30%;" title="Sepsis vector"></div>
+                        </div>
+                        <div class="radar-metrics" id="radar-metrics">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Evidence Knowledge Graph -->
+                <section class="card knowledge-graph" id="knowledge-graph-section">
+                    <div class="card-header">
+                        <h2><span class="material-icons-round">hub</span> Evidence Knowledge Graph</h2>
+                    </div>
+                    <div class="graph-container" id="graph-container">
+                        <!-- Simple visual graph populated by JS -->
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- HPC Infrastructure Simulation View -->
+            <div id="view-hpc" class="dashboard-grid view-section" style="display:none;">
+                
+                <div class="card" style="grid-column: span 12;">
+                    <div class="card-header">
+                        <h2><span class="material-icons-round">dns</span> Slurm Cluster Simulator</h2>
+                        <div>
+                            <button class="action-btn primary" onclick="simulateInferenceJob()">Queue Heavy Job</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Local On-Prem Cluster -->
+                <div class="card" style="grid-column: span 6; min-height: 400px; background: rgba(30,41,59,0.8);">
+                    <div class="card-header">
+                        <h2><span class="material-icons-round" style="color:var(--accent-primary)">router</span> On-Premise Cluster (Local)</h2>
+                        <span class="badge" id="local-capacity-badge">Capacity: 0/4</span>
+                    </div>
+                    <div class="server-rack" id="local-cluster">
+                        <!-- Simulated Nodes -->
+                        <div class="server-node" id="node-0"><div class="node-status"></div><span>Node 01</span><div class="job-bar"></div></div>
+                        <div class="server-node" id="node-1"><div class="node-status"></div><span>Node 02</span><div class="job-bar"></div></div>
+                        <div class="server-node" id="node-2"><div class="node-status"></div><span>Node 03</span><div class="job-bar"></div></div>
+                        <div class="server-node" id="node-3"><div class="node-status"></div><span>Node 04</span><div class="job-bar"></div></div>
+                    </div>
+                </div>
+
+                <!-- Public Cloud Bursting -->
+                <div class="card" style="grid-column: span 6; min-height: 400px; border-color: rgba(59,130,246,0.3); background: rgba(14,23,42,0.9);">
+                    <div class="card-header">
+                        <h2><span class="material-icons-round" style="color:#0ea5e9">cloud</span> Public Cloud Spillover</h2>
+                        <span class="badge" id="cloud-status-badge" style="background:transparent; border-color:var(--text-muted); color:var(--text-muted)">Idle</span>
+                    </div>
+                    
+                    <div class="data-transfer-bridge" id="burst-bridge">
+                        <div class="arrow-path"></div>
+                        <span class="bridge-text">Secure Encrypted Burst</span>
+                    </div>
+                    
+                    <div class="cloud-rack" id="cloud-cluster">
+                        <!-- Cloud Nodes spawned dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Job Queue Log -->
+                <div class="card" style="grid-column: span 12; min-height: 200px;">
+                    <div class="card-header">
+                        <h2><span class="material-icons-round">receipt_long</span> SLURM Workload Log</h2>
+                    </div>
+                    <div class="terminal-log" id="slurm-log">
+                        <p>[SYSTEM] Slurm initialized. Local queue active with 4 nodes.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Add Data Modal -->
+    <div class="modal no-print" id="lab-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Vitals or Lab Results</h2>
+                <button class="close-btn" onclick="document.getElementById('lab-modal').classList.remove('active')">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Data Type</label>
+                    <select class="form-control">
+                        <option>Current Vitals</option>
+                        <option>Complete Blood Count (CBC)</option>
+                        <option>Basic Metabolic Panel (BMP)</option>
+                    </select>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Heart Rate (bpm)</label>
+                        <input type="number" class="form-control" placeholder="e.g. 85">
+                    </div>
+                    <div class="form-group">
+                        <label>SpO2 (%)</label>
+                        <input type="number" class="form-control" placeholder="e.g. 98">
+                    </div>
+                </div>
+                <button class="submit-btn" onclick="document.getElementById('lab-modal').classList.remove('active'); alert('Data added successfully! AI Engine is reanalyzing...');">Submit to Context</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+
+</html>
